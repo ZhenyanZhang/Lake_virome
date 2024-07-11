@@ -1,0 +1,38 @@
+#Identification of putative viral contigs
+#what the phage pipeline
+nextflow run /data/Biosoft/replikation/What_the_Phage_master --databases /data/Biosoft/replikation/What_the_Phage_DB --fasta contigs.fasta --cores 20 --max_cores 200 -profile local,docker --output what_phage_result --offline --identify
+
+#Filtration of putative viral contigs
+#eggNOG annotation
+emapper.py -m diamond -d viruses --cpu 20 --itype metagenome --translate -i raw_phage.fa --output raw_phage_eggnog
+#extract virus with keywords ("capsid", "phage", "terminase", "base plate", "baseplate", "prohead", "virion", "virus", "viral", "tape measure", "tapemeasure neck", "tail", "head", "bacteriophage", "prophage", "portal", "DNA packaging", "T4", "p22", and "holin")
+python3 filter_phage_by_eggnog_checkv.py raw_phage.fa raw_phage_eggnog/emapper.annotations checkv_result final.phage.fa
+
+#Viral contig refinement
+#checkv
+checkv end_to_end -d /data/Database/checkv-db-v1.5 -t 20 raw_phage.fa checkv_result
+
+#Viral contig clustering into vOTUs
+cd-hit-est -i all.phage.fasta -c 0.95 -aS 0.85 -d 0 -T 12 -M 0 -o all.phage.cluster.fasta
+
+#Taxonomic assignment of vOTUs
+#protein sequences of vOTUs prediction with prodigal
+prodigal -p meta -i all.phage.cluster.fasta -a all.phage.cluster.faa
+#NCBI viral Refseq database
+python3 phage_tax.py all.phage.cluster.faa NCBI_viral/ncbi_viral.faa NCBI_viral/ncbi_viral.tax 2.phage_tax/tax_result
+
+#Calculation of viral abundance and prevalence
+bwa mem -t 8 vOTU.fasta fq1.gz fq2.gz|samtools view -bS - -o map.bam
+samtools sort --threads 1 map.bam -o map.sort.bam
+contig -m mean --min-read-percent-identity 0.95 --min-read-aligned-length 50 --min-covered-fraction 10 -b map.sort.bam --output-file map.cov
+
+#Host prediction of lake viruses
+#VirMatcher
+VirMatcher -v vOTU.fasta --bacteria-host-dir bac_genome --bacteria-taxonomy bac_tax.txt --threads 20 -o VirMatcher_result --python-aggregator
+
+#Identifying AMGs carried by lake viruses
+#VIBRANT
+VIBRANT_run.py -f nucl -i vOTU.fasta  -t 30 -no_plot
+#DRAMv
+virsorter run --prep-for-dramv -w virsorter2_result -i vOTU.fasta -j 30 all --db-dir /data/Database/virsorter2/latest --verbose --use-conda-off --scheduler greedy
+DRAM-v.py annotate -i virsorter2_result/for-dramv/final-viral-combined-for-dramv.fa -v virsorter2_result/for-dramv/viral-affi-contigs-for-dramv.tab -o dramv_result
