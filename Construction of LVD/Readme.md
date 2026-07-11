@@ -77,7 +77,7 @@ bowtie2-build 4.vibrant_results/vOTUs.fna 5.abundance/vOTUs_index
 Map the paired-end fastq reads to the established database index. Execute the custom parallel script ([run_bowtie2.sh](./run_bowtie2.sh)) specifying the inputs, database prefix, valid sample list, and allowed concurrent jobs:
 
 ```bash
-bash run_bowtie2.sh 1.cleandata 5.abundance/bam_output vOTUs_index sample_list.txt 3
+bash run_bowtie2.sh 1.cleandata 5.abundance/bam_output 5.abundance/vOTUs_index sample_list.txt 3
 ```
 
 ### 6.3 Subsampling and CoverM Quantification
@@ -87,7 +87,7 @@ Filter out samples that do not meet the minimum sequencing depth (e.g., 50M read
 Run the pipeline using the custom filtering script ([run_subsample_filter.sh](./run_subsample_filter.sh)):
 
 ```bash
-bash run_subsample_filter.sh 5.abundance/bam_output 0.75 5.abundance/final_Results
+bash run_subsample_filter.sh 5.abundance/bam_output 0.75 5.abundance/final_results
 ```
 
 ### 6.4 Merge Abundance Results
@@ -95,7 +95,7 @@ bash run_subsample_filter.sh 5.abundance/bam_output 0.75 5.abundance/final_Resul
 Combine all individual sample filtering results into a single comprehensive abundance table. The following command merges all output files while preserving only the first header row:
 
 ```bash
-awk 'NR==1 || FNR>1' 5.abundance/final_Results/*.final_stats.txt > 5.abundance/merged_abundance_table.tsv
+awk 'NR==1 || FNR>1' 5.abundance/final_results/*.final_stats.txt > 5.abundance/5.abundance/all_abundance.txt
 ```
 
 ## 7. Rarefaction Analysis
@@ -129,9 +129,9 @@ Compare the newly identified vOTUs against each public database. The thresholds 
 ```bash
 for db_file in db/*.fna; do
     db_name=$(basename -- "$db_file" .fna)
-    blastn -query vOTUs_new.fna \
+    blastn -query 4.vibrant_results/vOTUs.fna \
            -db "$db_file" \
-           -out "blast_vs_${db_name}.tsv" \
+           -out "4.vibrant_results/compare_other_db/blast_vs_${db_name}.tsv" \
            -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qcovs" \
            -perc_identity 90 \
            -qcov_hsp_perc 75 \
