@@ -1,4 +1,4 @@
-# Virus Identification
+# Construction of LVD
 
 Prior to running VIBRANT, simplify the contig IDs by removing any characters after spaces in the FASTA headers.
 
@@ -97,3 +97,48 @@ Combine all individual sample filtering results into a single comprehensive abun
 ```bash
 awk 'NR==1 || FNR>1' 5.abundance/final_Results/*.final_stats.txt > 5.abundance/merged_abundance_table.tsv
 ```
+
+## 7. Rarefaction Analysis
+
+To assess the coverage of lake viruses in the lake virome database, rarefaction analysis was performed using the `rtk` package in R (v4.3.1) with 100 random permutations.
+
+The custom R script processes the combined abundance table into a wide matrix format, converts it to a presence/absence matrix, executes the permutation calculation, and plots the sample accumulation curve with a 95% confidence interval.
+
+I executed this R script ([rarefaction_analysis.R](./rarefaction_analysis.R)) in R Studio in my Desktop (Windows 10).
+
+
+## 8. Comparison of the lake virome database with other large viral databases
+
+To determine the proportion of previously uncharacterized vOTUs in our lake virome database, we performed pairwise comparisons against major public viral databases, including the Global Oceans Viromes Database (v2.0), Gut Phage Database, Gut Virome Database, and IMG/VR v4. 
+
+### 8.1 Build BLAST Databases
+
+Before running the alignments, index the downloaded FASTA files into standard nucleotide BLAST databases. 
+
+```bash
+# Navigate to the db directory and index each database file
+for db_file in db/*.fna; do
+    makeblastdb -in "$db_file" -dbtype nucl -parse_seqids
+done
+```
+
+### 8.2 Run Sequential BLASTn Alignments
+
+Compare the newly identified vOTUs against each public database. The thresholds are strictly set to sequence similarity ≥ 90% and query coverage ≥ 75%. 
+
+```bash
+for db_file in db/*.fna; do
+    db_name=$(basename -- "$db_file" .fna)
+    blastn -query vOTUs_new.fna \
+           -db "$db_file" \
+           -out "blast_vs_${db_name}.tsv" \
+           -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qcovs" \
+           -perc_identity 90 \
+           -qcov_hsp_perc 75 \
+           -num_threads 64    
+    echo "[Done] Finished ${db_name}"
+done
+
+echo "All pairwise comparisons are complete."
+```
+
