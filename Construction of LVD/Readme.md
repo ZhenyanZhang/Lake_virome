@@ -142,3 +142,49 @@ done
 echo "All pairwise comparisons are complete."
 ```
 
+## 9. Gene Prediction and Taxonomic Clustering of vOTUs
+
+To classify the vOTUs into genus-level and family-level taxonomic groups, we utilized a protein-sharing network approach based on the methodology described by Nayfach et al. (DOI: [10.1038/s41564-021-00928-6](https://doi.org/10.1038/s41564-021-00928-6)). The specific Python clustering scripts (`amino_acid_identity.py` and `filter_aai.py`) were adapted from the MGV repository ([https://github.com/snayfach/MGV/tree/master/aai_cluster](https://github.com/snayfach/MGV/tree/master/aai_cluster)).
+
+### 9.1 ORF Prediction and Sequence Cleaning
+
+Open reading frames (ORFs) were predicted using Prodigal. The resulting protein FASTA file was then cleaned to simplify sequence headers and remove stop codon asterisks (`*`) to ensure compatibility with downstream alignment tools.
+
+```bash
+# Predict proteins
+prodigal -i 4.vibrant_results/vOTUs.fna -a 4.vibrant_results/gene_and_protein/vOTUs.faa -d 4.vibrant_results/gene_and_protein/vOTUs.genes.fna -p meta
+
+# Clean FASTA headers and remove stop codons
+awk '/^>/{print $1; next} {gsub(/\*/,""); print}' 4.vibrant_results/gene_and_protein/vOTUs.faa > 4.vibrant_results/gene_and_protein/vOTUs_clean.faa
+```
+
+### 9.2 All-vs-All Protein Alignment
+
+An all-vs-all protein sequence alignment was performed using DIAMOND.
+
+```bash
+# Build DIAMOND database
+diamond makedb --in 4.vibrant_results/gene_and_protein/vOTUs_clean.faa --db 4.vibrant_results/gene_and_protein/viral_proteins --threads 64
+
+# Run BLASTp
+diamond blastp --query 4.vibrant_results/gene_and_protein/vOTUs_clean.faa --db 4.vibrant_results/gene_and_protein/viral_proteins --out 4.vibrant_results/gene_and_protein/blastp.tsv --outfmt 6 --evalue 1e-5 --max-target-seqs 10000 --query-cover 50 --subject-cover 50 --threads 64
+```
+
+### 9.3 Protein-Sharing Network Clustering
+
+Amino acid identity (AAI) and shared protein fractions between vOTUs were calculated based on the BLASTp results. The network edges were then filtered using specific sequence similarity and coverage thresholds to establish genus-level and family-level relationships. Finally, the Markov Cluster Algorithm (MCL) was utilized to generate the taxonomic clusters.
+
+```bash
+# Calculate AAI between genomes
+python amino_acid_identity.py --in_faa 4.vibrant_results/gene_and_protein/vOTUs_clean.faa --in_blast 4.vibrant_results/gene_and_protein/blastp.tsv --out_tsv 4.vibrant_results/gene_and_protein/aai.tsv
+
+# Filter edges for Genus-level clustering
+python filter_aai.py --in_aai 4.vibrant_results/gene_and_protein/aai.tsv --min_percent_shared 20 --min_num_shared 16 --min_aai 40 --out_tsv 4.vibrant_results/gene_and_protein/genus_edges.tsv
+
+# Filter edges for Family-level clustering
+python filter_aai.py --in_aai 4.vibrant_results/gene_and_protein/aai.tsv --min_percent_shared 10 --min_num_shared 8 --min_aai 20 --out_tsv 4.vibrant_results/gene_and_protein/family_edges.tsv
+
+# MCL Clustering
+mcl 4.vibrant_results/gene_and_protein/genus_edges.tsv -te 8 -I 2.0 --abc -o 4.vibrant_results/gene_and_protein/genus_clusters.txt
+mcl 4.vibrant_results/gene_and_protein/family_edges.tsv -te 8 -I 1.2 --abc -o 4.vibrant_results/gene_and_protein/family_clusters.txt
+```
