@@ -85,3 +85,62 @@ dRep dereplicate 3.MAG/bin_drep \
     -sa 0.95 \
     --ignoreGenomeQuality
 ```
+
+## 6. Taxonomic Classification and Phylogenetic Tree Construction
+
+To assign taxonomy to the high-quality, non-redundant MAGs and infer their evolutionary relationships, we utilized GTDB-Tk (v2.4.0). The workflow involves classifying the genomes, separating them into bacterial and archaeal domains, and constructing *de novo* phylogenetic trees required for downstream host-virus predictions.
+
+### 6.1 Taxonomic Annotation
+
+Run the GTDB-Tk classification workflow (`classify_wf`) on the dereplicated MAGs.
+
+```bash
+gtdbtk classify_wf \
+    --genome_dir 3.MAG/bin_drep/dereplicated_genomes \
+    -x fa \
+    --out_dir 3.MAG/drep_bins.gtdbtk \
+    --cpus 64 \
+    --mash_db mashdb.msh
+```
+
+### 6.2 Separate Bacterial and Archaeal MAGs
+
+To construct domain-specific phylogenetic trees, the classified MAGs must be separated. A custom shell script ([copy_mags.sh](./scripts/copy_mags.sh)) parses the GTDB-Tk summary files (`gtdbtk.bac120.summary.tsv` and `gtdbtk.ar53.summary.tsv`)[cite: 16]. It then automatically copies the corresponding `.fa` files from the dereplicated folder into distinct bacterial (`3.MAG/drep_bins_new/bac`) and archaeal (`3.MAG/drep_bins_new/arc`) directories[cite: 16].
+
+Execute the separation script:
+
+```bash
+bash scripts/copy_mags.sh 3.MAG/bin_drep/dereplicated_genomes 3.MAG/drep_bins.gtdbtk
+```
+
+### 6.3 De Novo Phylogenetic Tree Construction
+
+Use the separated MAGs to build *de novo* phylogenetic trees using the GTDB-Tk `de_novo_wf` module. These decorated trees are essential inputs for generating the custom iPHoP host prediction database.
+
+Run the tree construction for both domains in the background:
+
+```bash
+# Construct tree for Bacterial MAGs
+nohup gtdbtk de_novo_wf \
+    --genome_dir 3.MAG/drep_bins_new/bac \
+    --out_dir 3.MAG/drep_bins_tree_bac \
+    --extension fa \
+    --bacteria \
+    --outgroup_taxon p__Patescibacteriota \
+    --cpus 128 \
+    --force \
+    --skip_gtdb_refs \
+    --custom_taxonomy_file 3.MAG/drep_bins.gtdbtk/gtdbtk.bac120.summary.tsv > 3.MAG/gtdbtk_tree_bac.log 2>&1 &
+
+# Construct tree for Archaeal MAGs
+nohup gtdbtk de_novo_wf \
+    --genome_dir 3.MAG/drep_bins_new/arc \
+    --out_dir 3.MAG/drep_bins_tree_arc \
+    --extension fa \
+    --archaea \
+    --outgroup_taxon p__Altarchaeota \
+    --cpus 128 \
+    --force \
+    --skip_gtdb_refs \
+    --custom_taxonomy_file 3.MAG/drep_bins.gtdbtk/gtdbtk.ar53.summary.tsv > 3.MAG/gtdbtk_tree_arc.log 2>&1 &
+```
