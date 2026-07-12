@@ -23,7 +23,7 @@ bash run_megahit.sh 1.cleandata 2.temp_assembly 3
 
 # Extract and pool all generated contig fasta files into a unified directory for downstream analyses
 mkdir -p 2.contigs
-find 2.assembly -name "*.contigs.fa" -exec cp {} 2.contigs/ \;
+find 2.temp_assembly -name "*.contigs.fa" -exec cp {} 2.contigs/ \;
 ```
 
 ## 3. Contig Binning
