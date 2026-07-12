@@ -10,4 +10,4 @@ Execute the Python script ([pam_clustering.py](./pam_clustering.py)) to calculat
 
 Execute the R script ([bca_analysis.R](./bca_analysis.R)) to perform principal coordinate analysis (PCoA) and between-class analysis (BCA). The script also generates the BCA spider plot and conducts a Monte-Carlo permutation test.
 
-*(Both scripts were performed in my Desktop (Windows 10).)
+*Both scripts were performed in my Desktop (Windows 10).*
