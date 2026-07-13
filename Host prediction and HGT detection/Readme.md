@@ -12,20 +12,20 @@ Prepare the GTDB-Tk output files (both bacterial and archaeal) by consolidating 
 
 ```bash
 # Create target directories
-mkdir -p 7.host_prediction/drep_bins_tree_all/align
-mkdir -p 7.host_prediction/drep_bins_tree_all/infer
+mkdir -p 7.host_prediction_and_HGT/drep_bins_tree_all/align
+mkdir -p 7.host_prediction_and_HGT/drep_bins_tree_all/infer
 
 # Copy bacterial GTDB-Tk results
-cp 3.MAG/drep_bins_tree_bac/gtdbtk.bac120.decorated.tree-table 7.host_prediction/drep_bins_tree_all/
-cp 3.MAG/drep_bins_tree_bac/gtdbtk.bac120.decorated.tree 7.host_prediction/drep_bins_tree_all/
-cp -r 3.MAG/drep_bins_tree_bac/align/* 7.host_prediction/drep_bins_tree_all/align/
-cp -r 3.MAG/drep_bins_tree_bac/infer/* 7.host_prediction/drep_bins_tree_all/infer/
+cp 3.MAG/drep_bins_tree_bac/gtdbtk.bac120.decorated.tree-table 7.host_prediction_and_HGT/drep_bins_tree_all/
+cp 3.MAG/drep_bins_tree_bac/gtdbtk.bac120.decorated.tree 7.host_prediction_and_HGT/drep_bins_tree_all/
+cp -r 3.MAG/drep_bins_tree_bac/align/* 7.host_prediction_and_HGT/drep_bins_tree_all/align/
+cp -r 3.MAG/drep_bins_tree_bac/infer/* 7.host_prediction_and_HGT/drep_bins_tree_all/infer/
 
 # Copy archaeal GTDB-Tk results
-cp 3.MAG/drep_bins_tree_arc/gtdbtk.ar53.decorated.tree-table 7.host_prediction/drep_bins_tree_all/
-cp 3.MAG/drep_bins_tree_arc/gtdbtk.ar53.decorated.tree 7.host_prediction/drep_bins_tree_all/
-cp 3.MAG/drep_bins_tree_arc/align/* 7.host_prediction/drep_bins_tree_all/align/
-cp 3.MAG/drep_bins_tree_arc/infer/gtdbtk.ar53* 7.host_prediction/drep_bins_tree_all/infer/
+cp 3.MAG/drep_bins_tree_arc/gtdbtk.ar53.decorated.tree-table 7.host_prediction_and_HGT/drep_bins_tree_all/
+cp 3.MAG/drep_bins_tree_arc/gtdbtk.ar53.decorated.tree 7.host_prediction_and_HGT/drep_bins_tree_all/
+cp 3.MAG/drep_bins_tree_arc/align/* 7.host_prediction_and_HGT/drep_bins_tree_all/align/
+cp 3.MAG/drep_bins_tree_arc/infer/gtdbtk.ar53* 7.host_prediction_and_HGT/drep_bins_tree_all/infer/
 ```
 
 ## 2. Create Custom iPHoP Database
@@ -35,7 +35,7 @@ Integrate the dereplicated MAGs and their corresponding GTDB-Tk taxonomy into th
 ```bash
 iphop add_to_db \
     --fna_dir 3.MAG/bin_drep \
-    --gtdb_dir 7.host_prediction/drep_bins_tree_all \
+    --gtdb_dir 7.host_prediction_and_HGT/drep_bins_tree_all \
     --num_threads 64 \
     --db_dir ./db/Jun_2025_pub_rw \
     --out_dir ./db/iphop_db_custom
@@ -50,7 +50,28 @@ Predict the bacterial and archaeal hosts for the identified vOTUs using the newl
 nohup iphop predict \
     --fa_file 4.vibrant_results/vOTUs.fna \
     --db_dir ./db/iphop_db_custom \
-    --out_dir 7.host_prediction/iPHoP \
+    --out_dir 7.host_prediction_and_HGT/iPHoP \
     -t 64 \
-    --min_score 75 > 7.host_prediction/iphop_predict.log 2>&1 &
+    --min_score 75 > 7.host_prediction_and_HGT/iphop_predict.log 2>&1 &
 ```
+
+## 4. Detection of HGT Events Among Host MAGs
+
+To detect horizontal gene transfer (HGT) events among the identified host MAGs, MetaCHIP (v1.10.13) was used, combining both best-match and phylogenetic approaches. Protein sequences of all host MAGs were predicted using Prodigal, followed by an all-versus-all nucleotide comparison using BLASTn to identify cross-group hits. A species tree was reconstructed based on concatenated single-copy marker genes obtained from GTDB-Tk to group host MAGs at five taxonomic levels (phylum, class, order, family, and genus). Candidate transfers were subsequently validated phylogenetically using Ranger-DTL (v2.0) to reconcile each gene tree with the species tree. 
+
+Execute the custom script ([run_metachip.sh](./run_metachip.sh)) to automatically parse the GTDB-Tk summaries and run the complete MetaCHIP PI and BP workflows:
+
+```bash
+bash run_metachip.sh
+```
+
+## 5. Identification of Virus-Carried Host Genes
+
+To identify potential vectors of HGT, we first clustered the protein sequences of all host MAGs into a non-redundant gene catalogue using CD-HIT (v4.7; 95% amino acid identity). The vOTU proteins (predicted by Prodigal) were then mapped against this host catalogue using DIAMOND. Candidate virus-carried host genes were defined using strict thresholds: e-value ≤ 1e-5, identity ≥ 50%, and coverage ≥ 70%. To eliminate false positives, conserved informational genes (COG category J, annotated by eggNOG-mapper v2.1.13) and genes overlapping with CheckV-defined host boundaries were discarded.
+
+Execute the custom script ([identify_virus_carried_genes.sh](./identify_virus_carried_genes.sh)) to process the alignments and filter the core informational genes:
+
+```bash
+bash identify_virus_carried_genes.sh
+```
+
