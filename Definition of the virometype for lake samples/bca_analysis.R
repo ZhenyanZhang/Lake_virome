@@ -1,5 +1,5 @@
 # Set working directory
-wd <- "D:/onedrive/zzy/isme_revised/redo/overview/PAM"
+wd <- "D:/onedrive/zzy/isme_revised/1.overview/PAM"
 setwd(wd)
 
 # Load required packages
