@@ -5,6 +5,7 @@ All scripts for analysis of lake virome
 1. shell script: Ubuntu 22.04.3 LTS (versions of bioinformatic softwares we used were provided in the manuscript)
 2. R script: Windows 10 (R: v4.3.1)
 3. Python script: Windows 10 & Ubuntu 22.04.3 LTS (python: v3.9)
+4. perl script: Ubuntu 22.04.3 LTS
 
 **Installation**
 Scripts and Codes can be directly downloaded from here.
