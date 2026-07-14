@@ -7,7 +7,7 @@
 # =====================================================================
 suppressMessages({ library(ggplot2); library(gggenes) })
 
-wd <- "D:/onedrive/lake_viruses/isme_revised/3.AMG"
+wd <- "/onedrive/zzy/isme_revised/3.AMG"
 setwd(wd)
 
 IN_PATH <- "context_plot_input.tsv"
