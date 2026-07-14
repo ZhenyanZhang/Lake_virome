@@ -66,3 +66,34 @@ Executed the data preparation script ([01_prepare_context.R](./01_prepare_contex
 Executed the visualization script ([02_plot_gggenes.R](./02_plot_gggenes.R)) to automatically construct and export the `gggenes` diagrams for each vOTU into the `context_plots` folder.
 
 *(Note: Both R scripts were performed in my Desktop (Windows10))*
+
+# 5. Phylogenetic Analysis of Representative AMGs
+
+The proteins of representative AMGs (phoH (K06217), cobS (K09882), psbA (K02703)) were mapped to the eggNOG database (v5.0.2) using DIAMOND (v2.1.9.163; `-k 50 --evalue 1e-5 --query-cover 50`). Mapped proteins from different domains (bacteria, eukaryotes, archaea, and viruses; each domain only maintained up to 5 hits) were selected for each AMG protein sequence. We then aligned all protein sequences (from the lake virome database and eggNOG databases) with MAFFT (v7.471; `--maxiterate 10 --localpair`) and removed poor alignments using trimAL (v1.4.rev15; `-gappyout`). Subsequently, IQ-TREE (v2.0.3; `-m MFP -B 10000`) was used to construct maximum likelihood phylogenetic trees. Phylogenetic trees were visualized using the web-based tool iTOL (v6.8.1; https://itol.embl.de). 
+
+## 5.1. Homolog Retrieval
+Run the DIAMOND alignment to map the representative AMG proteins against the eggNOG database and retrieve cellular homologues.
+
+```bash
+diamond blastp \
+    -q 8.AMG/final/representative_AMGs.faa \
+    -d db/eggnog/eggnog_proteins.dmnd \
+    -o 8.AMG/final/amg_vs_eggnog.tsv \
+    -k 50 \
+    --evalue 1e-5 \
+    --query-cover 50 \
+    -p 64
+```
+
+## 5.2. Phylogenetic Analysis Pipeline
+After manually parsing the DIAMOND output to retain up to 5 hits per domain and combining them with your viral AMG proteins (`combined_proteins_dedup.faa`), execute the automated pipeline script ([run_phylo_pipeline.sh](./run_phylo_pipeline.sh)). This script splits the sequences by KO family, aligns them with MAFFT, trims poor alignments with trimAL, and constructs the maximum likelihood trees via IQ-TREE.
+
+```bash
+bash run_phylo_pipeline.sh
+```
+**Tree Visualization:** Upload the generated `.treefile` outputs from the IQ-TREE folder to [iTOL](https://itol.embl.de) for aesthetic rendering and annotation.
+
+# 6. Visualization and Structural Prediction
+The downstream visualization and structural analyses do not require automated shell scripting. Perform the following steps interactively:
+*   **Structure Prediction:** Submit the selected representative protein sequences to the [AlphaFold Server](https://alphafoldserver.com/) (AlphaFold3).
+*   **Structural Alignment:** Load the predicted PDB files into PyMOL and use the `super` command to align the AMG protein with its cellular homologue. Calculate the final TM-score via the standalone TM-align executable or its web server equivalent.
