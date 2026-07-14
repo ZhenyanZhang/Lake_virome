@@ -7,7 +7,7 @@
 # =====================================================================
 
 # Set working directory (Change this path if needed)
-wd <- "D:/onedrive/lake_viruses/isme_revised/2.AMG"
+wd <- "/onedrive/zzy/isme_revised/2.AMG"
 setwd(wd)
 
 ANN_PATH  <- "all_annotations.tsv"
