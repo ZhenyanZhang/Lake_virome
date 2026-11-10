@@ -75,8 +75,8 @@ Execute the custom script ([identify_virus_carried_genes.sh](./identify_virus_ca
 bash identify_virus_carried_genes.sh
 ```
 
-## 6. Identification of Virus-Carried Host Genes
+## 6. Determination of Virus-Mediated HGT Events
 
-To Determine the virus-mediated HGT events. A virus-mediated HGT event between MAG_A and MAG_B was determined when a single vOTU met two conditions: (i) it carried a gene homologous to the transferred gene between MAG_A and MAG_B (results from Steps 1 and 2), and (ii) it was predicted to infect both MAG_A and MAG_B (results from iPHoP).
+To determine the virus-mediated HGT events. A virus-mediated HGT event between MAG_A and MAG_B was determined when a single vOTU met two conditions: (i) it carried a gene homologous to the transferred gene between MAG_A and MAG_B (results from Steps 1 and 2), and (ii) it was predicted to infect both MAG_A and MAG_B (results from iPHoP).
 
-Execute the custom script ([identify_virus_mediated_HGT.py](./identify_virus_mediated_HGT.py)) to aggregate the final virus-HGT and generate the summaries across different taxonomic level (I performed this scripts in my Desktop (Windows 10).
+Execute the custom script ([identify_virus_mediated_HGT.py](./identify_virus_mediated_HGT.py)) to aggregate the final virus-HGT and generate the summaries across different taxonomic level (I performed this scripts in my Desktop (Windows 10)).
