@@ -38,7 +38,7 @@ Each directory below corresponds to a core analytical module in the manuscript a
 2. **[Construction of LVD](./Construction%20of%20LVD)**  
    End-to-end workflow for constructing the lake virome database and clustering vOTUs.
 3. **[Taxonomic assignment of vOTUs](./Taxonomic%20assignment%20of%20vOTUs)**  
-   Gene calling (`Prodigal`), protein-sharing network clustering (`DIAMOND` and `MCL`), and the integrated hierarchical taxonomic workflow combining NCBI RefSeq homology, VOG HMM profiling, `geNomad`, and genus-level LCA assignment.
+   The taxonomic classification pipeline utilizes a consensus-based approach integrating multiple databases.
 4. **[Definition of the virometype for lake samples](./Definition%20of%20the%20virometype%20for%20lake%20samples)**  
    Jensen-Shannon distance (JSD) calculation, PAM clustering, Calinski-Harabasz index evaluation, between-class analysis, and the six-dimensional sensitivity analyses (alternative metrics, algorithms, filtering thresholds, normalizations, geographic/study-level subsampling, and repeated subsampling).
 5. **[Machine learning and SHAP](./Machine%20learning%20and%20SHAP)**  
