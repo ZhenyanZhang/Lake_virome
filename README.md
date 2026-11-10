@@ -6,7 +6,7 @@ This repository contains the bioinformatic workflows, custom scripts, parameter 
 Our analytical framework processes 706 global lake metagenomes to construct the lake virome database (42,141 species-level vOTUs), assign viral taxonomy, define community-level "virometypes" along climatic and anthropogenic gradients via machine learning and SHAP, infer host–virus interactions and virus-mediated horizontal gene transfer (HGT), and characterize putative auxiliary metabolic genes (AMGs).
 
 ## 🛠️ System Requirements & Environments
-* **Operating Systems:** Ubuntu 22.04.3 LTS (Linux HPC environment for Bash, Perl, and Python workflows) and Windows 10 (for R-based statistical analyses and visualization).
+* **Operating Systems:** Ubuntu 22.04.3 LTS and Windows 10.
 * **Programming Languages:** Python (v3.9), R (v4.3.1), Perl (v5.34), and Bash.
 
 ### Software Versions
@@ -31,29 +31,23 @@ Our analytical framework processes 706 global lake metagenomes to construct the 
 
 ## 📂 Repository Structure & Analytical Workflow
 
-Each directory below corresponds to a core analytical module in the manuscript and contains its own detailed `README`, scripts, and parameter settings[cite: 2]:
+Each directory below corresponds to a core analytical module in the manuscript and contains its own detailed `README`, scripts, and parameter settings:
 
-1. **[AAA_Before all](./AAA_Before%20all)**[cite: 2]  
-   Prerequisites, environment preparation, and general notes before running the workflow.
-2. **[Construction of LVD](./Construction%20of%20LVD)**[cite: 2]  
+1. **[AAA_Before all](./AAA_Before%20all)** 
+   Before viral identification, raw sequencing data was processed through a standardized pipeline including quality control, de novo assembly, contig binning, and genome dereplication to obtain high-quality Metagenome-Assembled Genomes (MAGs).
+2. **[Construction of LVD](./Construction%20of%20LVD)**  
    Raw read quality control (`fastp`), metagenomic assembly (`MEGAHIT`), viral contig identification (`VIBRANT` and `CheckV`), species-level vOTU dereplication (`CD-HIT`), 50-million-read subsampling (`Bowtie2` and `SAMtools`), abundance quantification (`CoverM`), and rarefaction/database comparisons.
-3. **[Taxonomic assignment of vOTUs](./Taxonomic%20assignment%20of%20vOTUs)**[cite: 2]  
+3. **[Taxonomic assignment of vOTUs](./Taxonomic%20assignment%20of%20vOTUs)**  
    Gene calling (`Prodigal`), protein-sharing network clustering (`DIAMOND` and `MCL`), and the integrated hierarchical taxonomic workflow combining NCBI RefSeq homology, VOG HMM profiling, `geNomad`, and genus-level LCA assignment.
-4. **[Definition of the virometype for lake samples](./Definition%20of%20the%20virometype%20for%20lake%20samples)**[cite: 2]  
+4. **[Definition of the virometype for lake samples](./Definition%20of%20the%20virometype%20for%20lake%20samples)**  
    Jensen-Shannon distance (JSD) calculation, PAM clustering, Calinski-Harabasz index evaluation, between-class analysis, and the six-dimensional sensitivity analyses (alternative metrics, algorithms, filtering thresholds, normalizations, geographic/study-level subsampling, and repeated subsampling).
-5. **[Machine learning and SHAP](./Machine%20learning%20and%20SHAP)**[cite: 2]  
+5. **[Machine learning and SHAP](./Machine%20learning%20and%20SHAP)**  
    Multicollinearity filtering (VIF), hyperparameter tuning with 10-fold cross-validation (`Random Forest`, `XGBoost`, `Logistic Regression`), `SHAP` value computation (`TreeExplainer`), LOESS threshold fitting, leave-one-lake-out spatial cross-validation, and variation partitioning analysis (VPA).
-6. **[Host prediction and HGT detection](./Host%20prediction%20and%20HGT%20detection)**[cite: 2]  
+6. **[Host prediction and HGT detection](./Host%20prediction%20and%20HGT%20detection)**  
    Host MAG recovery and dereplication (`MetaBAT2`, `dRep`, `GTDB-Tk`), custom `iPHoP` host prediction, cross-genus HGT inference (`MetaCHIP` and `Ranger-DTL`), and identification of virus-carried host genes and virus-mediated HGT events.
-7. **[AMG Identification](./AMG%20Identification)**[cite: 2]  
+7. **[AMG Identification](./AMG%20Identification)**  
    Formatting and putative AMG annotation (`VirSorter2` and `DRAM-v`), manual curation rules, genomic context visualization (`gggenes`), phylogenetic tree reconstruction (`MAFFT`, `trimAl`, `IQ-TREE`), and protein structural alignment (`PyMOL` and `TM-align`).
-8. **[Visualization](./Visualization)**[cite: 2]  
+8. **[Visualization](./Visualization)**  
    Scripts for microbial community profiling, cross-domain and bacterial co-occurrence network construction (`ggClusterNet` and `igraph`), network robustness tests, and statistical plotting.
 
 ---
-
-## 🚀 Usage Instructions
-Clone this repository to your local machine or HPC cluster:
-```bash
-git clone [https://github.com/ZhenyanZhang/Lake_virome.git](https://github.com/ZhenyanZhang/Lake_virome.git)
-cd Lake_virome
