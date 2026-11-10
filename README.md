@@ -36,7 +36,7 @@ Each directory below corresponds to a core analytical module in the manuscript a
 1. **[AAA_Before all](./AAA_Before%20all)**  
    Before viral identification, raw sequencing data was processed through a standardized pipeline including quality control, de novo assembly, contig binning, and genome dereplication to obtain high-quality Metagenome-Assembled Genomes (MAGs).
 2. **[Construction of LVD](./Construction%20of%20LVD)**  
-   Raw read quality control (`fastp`), metagenomic assembly (`MEGAHIT`), viral contig identification (`VIBRANT` and `CheckV`), species-level vOTU dereplication (`CD-HIT`), 50-million-read subsampling (`Bowtie2` and `SAMtools`), abundance quantification (`CoverM`), and rarefaction/database comparisons.
+   End-to-end workflow for constructing the lake virome database and clustering vOTUs.
 3. **[Taxonomic assignment of vOTUs](./Taxonomic%20assignment%20of%20vOTUs)**  
    Gene calling (`Prodigal`), protein-sharing network clustering (`DIAMOND` and `MCL`), and the integrated hierarchical taxonomic workflow combining NCBI RefSeq homology, VOG HMM profiling, `geNomad`, and genus-level LCA assignment.
 4. **[Definition of the virometype for lake samples](./Definition%20of%20the%20virometype%20for%20lake%20samples)**  
