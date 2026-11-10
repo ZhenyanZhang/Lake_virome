@@ -1,5 +1,5 @@
 # Machine learning and SHAP
-This module provides the Python workflow for modeling and interpreting the associations between climatic/anthropogenic variables and global lake virometypes. Specifically, it includes scripts for multicollinearity filtering via variance inflation factors (VIF < 10), multi-algorithm hyperparameter tuning and model evaluation, and SHapley Additive exPlanations (SHAP) analysis with LOESS fitting to quantify predictor contributions and identify environmental thresholds.
+This module provides the workflow for modeling and interpreting the associations between climatic/anthropogenic variables and global lake virometypes. Specifically, it includes scripts for multicollinearity filtering via variance inflation factors (VIF < 10), multi-algorithm hyperparameter tuning and model evaluation, and SHapley Additive exPlanations (SHAP) analysis with LOESS fitting to quantify predictor contributions and identify environmental thresholds.
 ## 1. Feature Selection
 
 To minimize the impact of multicollinearity between collected variables in subsequent analyses, variance inflation factors (VIF) were calculated. Variables were iteratively removed until only those with a VIF < 10 were retained.
