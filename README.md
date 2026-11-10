@@ -33,7 +33,7 @@ Our analytical framework processes 706 global lake metagenomes to construct the 
 
 Each directory below corresponds to a core analytical module in the manuscript and contains its own detailed `README`, scripts, and parameter settings:
 
-1. **[AAA_Before all](./AAA_Before%20all)** 
+1. **[AAA_Before all](./AAA_Before%20all)**  
    Before viral identification, raw sequencing data was processed through a standardized pipeline including quality control, de novo assembly, contig binning, and genome dereplication to obtain high-quality Metagenome-Assembled Genomes (MAGs).
 2. **[Construction of LVD](./Construction%20of%20LVD)**  
    Raw read quality control (`fastp`), metagenomic assembly (`MEGAHIT`), viral contig identification (`VIBRANT` and `CheckV`), species-level vOTU dereplication (`CD-HIT`), 50-million-read subsampling (`Bowtie2` and `SAMtools`), abundance quantification (`CoverM`), and rarefaction/database comparisons.
