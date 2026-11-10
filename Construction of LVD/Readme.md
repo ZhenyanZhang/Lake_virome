@@ -179,7 +179,7 @@ Amino acid identity (AAI) and shared protein fractions between vOTUs were calcul
 python amino_acid_identity.py --in_faa 4.vibrant_results/gene_and_protein/vOTUs_clean.faa --in_blast 4.vibrant_results/gene_and_protein/blastp.tsv --out_tsv 4.vibrant_results/gene_and_protein/aai.tsv
 
 # Filter edges for Genus-level clustering
-python filter_aai.py --in_aai 4.vibrant_results/gene_and_protein/aai.tsv --min_percent_shared 20 --min_num_shared 16 --min_aai 40 --out_tsv 4.vibrant_results/gene_and_protein/genus_edges.tsv
+python filter_aai.py --in_aai 4.vibrant_results/gene_and_protein/aai.tsv --min_percent_shared 20 --min_num_shared 16 --min_aai 50 --out_tsv 4.vibrant_results/gene_and_protein/genus_edges.tsv
 
 # Filter edges for Family-level clustering
 python filter_aai.py --in_aai 4.vibrant_results/gene_and_protein/aai.tsv --min_percent_shared 10 --min_num_shared 8 --min_aai 20 --out_tsv 4.vibrant_results/gene_and_protein/family_edges.tsv
