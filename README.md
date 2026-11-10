@@ -42,7 +42,7 @@ Each directory below corresponds to a core analytical module in the manuscript a
 4. **[Definition of the virometype for lake samples](./Definition%20of%20the%20virometype%20for%20lake%20samples)**  
    We characterized the shared patterns of viruses in global lakes by comparing the detection of vOTUs in each pair of lakes. To further explore the biogeographic patterns of lake viromes, we grouped the lake samples into distinct “virometypes” by their viral community composition, following the “enterotype” concept in microbiome research.
 5. **[Machine learning and SHAP](./Machine%20learning%20and%20SHAP)**  
-   Multicollinearity filtering (VIF), hyperparameter tuning with 10-fold cross-validation (`Random Forest`, `XGBoost`, `Logistic Regression`), `SHAP` value computation (`TreeExplainer`), LOESS threshold fitting, leave-one-lake-out spatial cross-validation, and variation partitioning analysis (VPA).
+   This module provides the workflow for modeling and interpreting the associations between climatic/anthropogenic variables and global lake virometypes.
 6. **[Host prediction and HGT detection](./Host%20prediction%20and%20HGT%20detection)**  
    Host MAG recovery and dereplication (`MetaBAT2`, `dRep`, `GTDB-Tk`), custom `iPHoP` host prediction, cross-genus HGT inference (`MetaCHIP` and `Ranger-DTL`), and identification of virus-carried host genes and virus-mediated HGT events.
 7. **[AMG Identification](./AMG%20Identification)**  
