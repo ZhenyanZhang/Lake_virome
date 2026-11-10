@@ -46,8 +46,8 @@ Each directory below corresponds to a core analytical module in the manuscript a
 6. **[Host prediction and HGT detection](./Host%20prediction%20and%20HGT%20detection)**  
    Workflows and scripts for predicting viral hosts using a custom MAG-integrated `iPHoP` database and identifying virus-mediated horizontal gene transfer (HGT) events by combining `MetaCHIP` phylogenetic reconciliation with virus–host gene-sharing analysis.
 7. **[AMG Identification](./AMG%20Identification)**  
-   Formatting and putative AMG annotation (`VirSorter2` and `DRAM-v`), manual curation rules, genomic context visualization (`gggenes`), phylogenetic tree reconstruction (`MAFFT`, `trimAl`, `IQ-TREE`), and protein structural alignment (`PyMOL` and `TM-align`).
+   Pipelines and scripts for putative AMG identification and curation, genomic context visualization, phylogenetic reconstruction, and protein structural alignment.
 8. **[Visualization](./Visualization)**  
-   Scripts for microbial community profiling, cross-domain and bacterial co-occurrence network construction (`ggClusterNet` and `igraph`), network robustness tests, and statistical plotting.
+   Scripts for Visualization.
 
 ---
